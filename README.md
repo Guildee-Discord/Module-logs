@@ -1,0 +1,1 @@
+This module adds a centralized logging system to your application, allowing you to send structured logs to the destinations defined in your configuration, such as Discord webhooks, with full control from your code.

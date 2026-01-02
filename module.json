@@ -1,0 +1,12 @@
+{
+  "name": "logs",
+  "version": "1.0.1",
+  "enabled": true,
+  "id": "logs",
+  "description": "Logs Management System",
+  "update": {
+    "versionUrl": "https://raw.githubusercontent.com/Guildee-Discord/Module-logs/main/VERSION",
+    "repoUrl": "https://github.com/Guildee-Discord/Module-logs/tree/main"
+  },
+  "dependsOn": []
+}

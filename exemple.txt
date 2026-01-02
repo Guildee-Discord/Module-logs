@@ -1,0 +1,113 @@
+📁 configuration/webhook.json
+
+{
+  "webhooks": {
+    "url": {
+      "logs":  "https://discord.com/api/webhooks/ID/TOKEN",
+      "login": "https://discord.com/api/webhooks/ID/TOKEN",
+      "admin": "https://discord.com/api/webhooks/ID/TOKEN"
+    },
+    "custom": {
+      "logs": {
+        "username": "Website Logs",
+        "avatar_url": "https://i.imgur.com/1J5qX5E.png"
+      },
+      "login": {
+        "username": "Login",
+        "avatar_url": "https://i.imgur.com/abcd1234.png"
+      },
+      "admin": {
+        "username": "Admin",
+        "avatar_url": "https://i.imgur.com/efgh5678.png"
+      }
+    }
+  }
+}
+
+────────────────────────────────────────────────────
+
+🔧 Accès aux valeurs
+
+- webhooks.url.<nom>               → URL du webhook
+- webhooks.custom.<nom>.username   → Nom affiché du webhook
+- webhooks.custom.<nom>.avatar_url → Avatar du webhook
+
+────────────────────────────────────────────────────
+
+🧠 Initialisation dans createContainer(config)
+
+ctx.webhooks = null;
+
+ctx.webhooksReady = new Promise(resolve => {
+  ctx._resolveWebhooksReady = resolve;
+});
+
+→ Une fois les webhooks chargés :
+ctx._resolveWebhooksReady();
+
+────────────────────────────────────────────────────
+
+⏳ Utilisation dans tous les modules
+
+Toujours commencer par :
+await ctx.webhooksReady;
+
+Vérifier la disponibilité :
+
+if (!ctx.webhooks?.login?.send) {
+  ctx.logger?.warn?.("[login] webhook non prêt");
+  return;
+}
+
+────────────────────────────────────────────────────
+
+✉️ Envoyer un message simple
+
+try {
+  await ctx.webhooks.login.send({
+    content: "✅ Module Login démarré"
+  });
+} catch (e) {
+  ctx.logger?.warn?.("[login] webhook error: " + (e.message || String(e)));
+}
+
+────────────────────────────────────────────────────
+
+📦 Envoyer un log embed
+
+try {
+  await ctx.webhooks.login.log({
+    level: "success",
+    title: "Module Login",
+    message: "Démarré correctement",
+    fields: [
+      { name: "Serveur", value: "prod-1", inline: true },
+      { name: "Port", value: "3000", inline: true }
+    ]
+  });
+} catch (e) {
+  ctx.logger?.warn?.("[login] webhook log error: " + (e.message || String(e)));
+}
+
+────────────────────────────────────────────────────
+
+➕ Ajouter un nouveau webhook
+
+Dans configuration/webhook.json :
+
+- webhooks.url.staff
+- webhooks.custom.staff
+
+────────────────────────────────────────────────────
+
+🧪 Test rapide
+
+await ctx.webhooksReady;
+
+try {
+  await ctx.webhooks?.logs?.send?.({
+    content: "Hello webhook 👋"
+  });
+} catch (e) {
+  ctx.logger?.warn?.("Webhook error: " + (e.message || String(e)));
+}
